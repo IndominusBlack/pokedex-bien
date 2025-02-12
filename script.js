@@ -1,22 +1,19 @@
 const pokemonList = document.getElementById('pokemon-list');
-const searchInput = document.getElementById('search');
-const typeFilter = document.getElementById('type-filter');
+const typeButtons = document.querySelectorAll('.barra img');
+const sortSelect = document.getElementById('type-filter');
+let allPokemon = []; // Guardamos todos los Pokémon
+let selectedTypes = []; // Aquí guardaremos los tipos seleccionados
 
-const API_URL = 'https://pokeapi.co/api/v2/pokemon?limit=1025';
-
-// Cargar los Pokémon al inicio
+// Cargar Pokémon
 async function loadPokemon() {
-    try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        const pokemons = data.results;
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1600');
+    const data = await response.json();
+    const pokemons = data.results;
 
-        pokemons.forEach(async (pokemon, index) => {
-            const pokemonData = await fetchPokemonDetails(pokemon.url);
-            createPokemonCard(pokemonData, index + 1);
-        });
-    } catch (error) {
-        console.error('Error cargando los Pokémon:', error);
+    for (let i = 0; i < pokemons.length; i++) {
+        const pokemonData = await fetchPokemonDetails(pokemons[i].url);
+        allPokemon.push(pokemonData);
+        createPokemonCard(pokemonData, i + 1);
     }
 }
 
@@ -28,16 +25,19 @@ async function fetchPokemonDetails(url) {
 
 // Crear tarjeta de Pokémon
 function createPokemonCard(pokemon, number) {
-    const types = pokemon.types.map(type => type.type.name).join(', ');
-    
+    const types = pokemon.types.map(type => type.type.name);
+
     const card = document.createElement('div');
     card.className = 'pokemon-card';
+    card.setAttribute('data-types', types.join(',')); // Guardamos los tipos en el dataset
+    card.setAttribute('data-number', number); // Guardamos el número de la Pokédex
+    card.setAttribute('data-name', pokemon.name); // Guardamos el nombre
     card.innerHTML = `
         <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
         <h3>#${number.toString().padStart(3, '0')} ${pokemon.name}</h3>
-        <p>${types}</p>
+        <p>${types.join(', ')}</p>
     `;
-    
+
     card.addEventListener('click', () => {
         window.location.href = `detalle.html?pokemon=${pokemon.name}`;
     });
@@ -45,19 +45,66 @@ function createPokemonCard(pokemon, number) {
     pokemonList.appendChild(card);
 }
 
-// Filtrar Pokémon por nombre
-searchInput.addEventListener('input', () => {
-    const filter = searchInput.value.toLowerCase();
+// Filtrar Pokémon por tipo (ahora permite solo hasta 2 tipos simultáneos y se deben cumplir ambos)
+function filterByType() {
     const cards = document.querySelectorAll('.pokemon-card');
 
     cards.forEach(card => {
-        const name = card.querySelector('h3').textContent.toLowerCase();
-        if (name.includes(filter)) {
+        const cardTypes = card.getAttribute('data-types').split(',');
+        if (selectedTypes.length === 0 || (selectedTypes.length <= 2 && selectedTypes.every(type => cardTypes.includes(type)))) {
             card.style.display = 'block';
         } else {
             card.style.display = 'none';
         }
     });
+}
+
+// Manejo de selección de tipos (máximo 2 seleccionados)
+typeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const type = button.getAttribute('data-type');
+
+        if (selectedTypes.includes(type)) {
+            // Si ya estaba seleccionado, lo quitamos
+            selectedTypes = selectedTypes.filter(t => t !== type);
+            button.classList.remove('selected');
+        } else {
+            // Si hay menos de 2 tipos seleccionados, lo añadimos
+            if (selectedTypes.length < 2) {
+                selectedTypes.push(type);
+                button.classList.add('selected');
+            }
+        }
+
+        filterByType();
+    });
+});
+
+// Ordenar Pokémon
+function sortPokemon(criteria) {
+    const cards = Array.from(document.querySelectorAll('.pokemon-card'));
+
+    cards.sort((a, b) => {
+        if (criteria === 'name') {
+            return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
+        } else if (criteria === 'number') {
+            return parseInt(a.getAttribute('data-number')) - parseInt(b.getAttribute('data-number'));
+        }
+        return 0;
+    });
+
+    pokemonList.innerHTML = ""; // Limpiamos la lista
+    cards.forEach(card => pokemonList.appendChild(card)); // Reagregamos en orden
+}
+
+// Evento para ordenar Pokémon
+sortSelect.addEventListener('change', () => {
+    const value = sortSelect.value;
+    if (value === 'name') {
+        sortPokemon('name');
+    } else if (value === 'number') {
+        sortPokemon('number');
+    }
 });
 
 // Cargar Pokémon al iniciar

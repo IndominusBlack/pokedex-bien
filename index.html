@@ -4,19 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedex</title>
+    <link rel="icon" href="assets/logo.png">
     <link rel="stylesheet" href="styles.css">
     <script defer src="script.js"></script>
 </head>
 <body>
     <header class="header">
-        <h1>Sinnoh Pokédex</h1>
+        <img src="assets/pokédex.png" alt="Pokédex" class="logo-pokedex">
         <div class="controls">
             <input type="text" id="search" placeholder="Buscar Pokémon...">
             <select id="type-filter">
-                <option value="">Filtrar por Tipo</option>
-            </select>
+                <option value="">Ordenar por...</option>
+                <option value="name">Ordenar por Nombre</option>
+                <option value="number">Ordenar por Nº de la Pokédex</option>
+            </select>            
         </div>
     </header>
+
+    <nav class="barra">
+        <ul>
+            <img src="assets/tipos/Tipo_acero_LPA.png" alt="Tipo Acero" data-type="steel">
+            <img src="assets/tipos/Tipo_agua_LPA.png" alt="Tipo Agua" data-type="water">
+            <img src="assets/tipos/Tipo_bicho_LPA.png" alt="Tipo Bicho" data-type="bug">
+            <img src="assets/tipos/Tipo_dragón_LPA.png" alt="Tipo Dragón" data-type="dragon">
+            <img src="assets/tipos/Tipo_eléctrico_LPA.png" alt="Tipo Eléctrico" data-type="electric">
+            <img src="assets/tipos/Tipo_fantasma_LPA.png" alt="Tipo Fantasma" data-type="ghost">
+            <img src="assets/tipos/Tipo_fuego_LPA.png" alt="Tipo Fuego" data-type="fire">
+            <img src="assets/tipos/Tipo_hada_LPA.png" alt="Tipo Hada" data-type="fairy">
+            <img src="assets/tipos/Tipo_hielo_LPA.png" alt="Tipo Hielo" data-type="ice">
+            <img src="assets/tipos/Tipo_lucha_LPA.png" alt="Tipo Lucha" data-type="fighting">
+            <img src="assets/tipos/Tipo_normal_LPA.png" alt="Tipo Normal" data-type="normal">
+            <img src="assets/tipos/Tipo_planta_LPA.png" alt="Tipo Planta" data-type="grass">
+            <img src="assets/tipos/Tipo_psíquico_LPA.png" alt="Tipo Psíquico" data-type="psychic">
+            <img src="assets/tipos/Tipo_roca_LPA.png" alt="Tipo Roca" data-type="rock">
+            <img src="assets/tipos/Tipo_siniestro_LPA.png" alt="Tipo Siniestro" data-type="dark">
+            <img src="assets/tipos/Tipo_tierra_LPA.png" alt="Tipo Tierra" data-type="ground">
+            <img src="assets/tipos/Tipo_veneno_LPA.png" alt="Tipo Veneno" data-type="poison">
+            <img src="assets/tipos/Tipo_volador_LPA.png" alt="Tipo Volador" data-type="flying">
+        </ul>
+    </nav>
 
     <main class="pokedex">
         <section class="pokemon-list" id="pokemon-list">
