@@ -1,54 +1,69 @@
 const pokemonDetail = document.getElementById('pokemon-detail');
 
-// Obtener el nombre del Pokémon de los parámetros de la URL
-const params = new URLSearchParams(window.location.search);
-const pokemonName = params.get('pokemon');
+const parametros = new URLSearchParams(window.location.search);
+const nombrePokemon = parametros.get('pokemon');
 
-if (pokemonName) {
-    loadPokemonDetails(pokemonName);
+if (nombrePokemon) {
+    cargarDetallesPoke(nombrePokemon);
 } else {
     pokemonDetail.innerHTML = '<p>Error: No se proporcionó un Pokémon válido.</p>';
 }
 
-// Cargar los detalles del Pokémon
-async function loadPokemonDetails(name) {
+async function cargarDetallesPoke(name) {
     try {
-        const pokemonData = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-        const speciesData = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`);
+        const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+        const especie = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${name}`);
 
-        if (!pokemonData.ok || !speciesData.ok) {
+        if (!pokemon.ok || !especie.ok) {
             throw new Error('Error al cargar los datos del Pokémon.');
         }
 
-        const pokemon = await pokemonData.json();
-        const species = await speciesData.json();
+        const datosPokemon = await pokemon.json();
+        const datosEspecie = await especie.json();
 
-        displayPokemonDetails(pokemon, species);
+        mostrarDetallesPoke(datosPokemon, datosEspecie);
     } catch (error) {
         console.error(error);
         pokemonDetail.innerHTML = '<p>Error al cargar los detalles del Pokémon.</p>';
     }
 }
 
-// Mostrar los detalles del Pokémon
-function displayPokemonDetails(pokemon, species) {
-    const types = pokemon.types.map(type => type.type.name).join(', ');
-    const abilities = pokemon.abilities.map(ability => ability.ability.name).join(', ');
+function mostrarDetallesPoke(pokemon, especies) {
+    let typeList = [];
+    for (let i = 0; i < pokemon.types.length; i++) {
+        typeList.push(pokemon.types[i].type.name);
+    }
 
-    const stats = pokemon.stats.map(stat => `
-        <tr>
-            <td>${stat.stat.name}</td>
-            <td>${stat.base_stat}</td>
-        </tr>
-    `).join('');
+    let listaHabilidades = [];
+    for (let i = 0; i < pokemon.abilities.length; i++) {
+        listaHabilidades.push(pokemon.abilities[i].ability.name);
+    }
+
+    let statsHTML = '';
+    for (let i = 0; i < pokemon.stats.length; i++) {
+        statsHTML += `
+            <tr>
+                <td>${pokemon.stats[i].stat.name}</td>
+                <td>${pokemon.stats[i].base_stat}</td>
+            </tr>
+        `;
+    }
+
+    let descripcionPokedex = 'Descripción no disponible en español.';
+    for (let i = 0; i < especies.flavor_text_entries.length; i++) {
+        if (especies.flavor_text_entries[i].language.name === 'es') {
+            descripcionPokedex = especies.flavor_text_entries[i].flavor_text.replace(/[\n\f]/g, ' '); // Eliminamos saltos de línea
+            break;
+        }
+    }
 
     pokemonDetail.innerHTML = `
         <section class="pokemon-info">
             <img src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${pokemon.name}">
             <h2>${pokemon.name}</h2>
-            <p>Tipo(s): ${types}</p>
-            <p>Habilidades: ${abilities}</p>
-            <p>Descripción: ${species.flavor_text_entries.find(entry => entry.language.name === 'es').flavor_text}</p>
+            <p><strong>Tipo(s):</strong> ${typeList.join(', ')}</p>
+            <p><strong>Habilidades:</strong> ${listaHabilidades.join(', ')}</p>
+            <p><strong>Descripción:</strong> ${descripcionPokedex}</p>
         </section>
 
         <section class="pokemon-stats">
@@ -61,7 +76,7 @@ function displayPokemonDetails(pokemon, species) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${stats}
+                    ${statsHTML}
                 </tbody>
             </table>
         </section>
