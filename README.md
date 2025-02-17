@@ -1,1 +1,1 @@
-# pokedex-bien
+# pokedex-EDU y JUAN

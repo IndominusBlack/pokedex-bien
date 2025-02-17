@@ -4,17 +4,46 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f3f3f3;
-    background-image: url(assets/fondo.png) 
+    background-image: url('assets/fondo.png'); /* Asegúrate de que la ruta es correcta */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    z-index: -1; /* Esto asegura que el fondo siempre esté detrás del contenido */
 }
 
+/* PARA LA PAGINA PRINCIPAL */
 .header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #960101;
+    background-image: url(assets/fondopng.gif);
     color: white;
     padding: 10px;
     text-align: center;
+}
+/* PARA LA PAGINA "DETALLES" */
+.headerdet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to right, rgb(9, 120, 247) ,rgb(24, 224, 147) );
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.h1det {
+    font-size: 400%;
+    text-shadow: 0px 0px 10px #ffffffc9;
+    font-family: 'Roboto', sans-serif;
+    background-image: url(assets/letras.gif);
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: rgba(0, 0, 0, 0.445);
+    background-clip: text;
+    -webkit-background-clip: text;
+    text-align: center;
+
 }
 
 .controls {
@@ -83,20 +112,21 @@ select#type-filter {
 }
 
 .barra {
-    background-color: #348ed8;
+    background: linear-gradient(to right, rgb(185, 32, 11) ,rgb(224, 87, 24) );
     display: flex;
     border-top: 2px solid #000000;
 }
 
-/* FALTA QUE QUEDE SIMETRICAS LAS IMAGENES EN EL CUADRITO, QUE ESTAN MAS A LA DERECHA Q A LA IZQ */
+/*  ( YA ESTA ARREGLADO <3 )  */
 
 .barra img {
-    margin: 4px;
+    margin: 2px;
     width: 140px;
     height: 37px;
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     border-radius: 5px;
+    background-color: #7ab4c59a;
 }
 
 .barra img:hover {
@@ -113,12 +143,15 @@ select#type-filter {
 /* Estilos generales para la página de detalles */
 .pokemon-detail-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
     justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
     padding: 20px;
-    background-color: #f3f3f3;
-    font-family: Arial, sans-serif;
+    background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente */
+    border-radius: 10px;
+    position: relative; /* Asegura que los elementos dentro no se salgan del contenedor */
+    z-index: 1; /* Esto asegura que el contenido se muestre por encima del fondo */
 }
 
 /* Estilo de la sección de detalles del Pokémon */
@@ -166,6 +199,17 @@ select#type-filter {
     color: #0074C2;
     margin-bottom: 20px;
     text-align: center;
+}
+
+.pokemon-info, .pokemon-stats {
+    flex: 1; /* Esto hará que ambos bloques ocupen el mismo tamaño */
+    min-width: 500px; /* Establece un tamaño mínimo para los bloques */
+    max-width: 500px; /* Ajusta según el tamaño que desees */
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    transition: transform 0.3s ease-in-out;
 }
 
 table {
